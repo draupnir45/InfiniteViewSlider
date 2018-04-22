@@ -26,7 +26,8 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Jongchan Park' => 'draupnir45@gmail.com' }
   s.source           = { :git => 'https://github.com/draupnir45/InfiniteViewSlider.git', :tag => s.version.to_s }
-  s.pod_target_xcconfig = { "SWIFT_VERSION" => "4.0" }
+  #s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.1' }
+  s.swift_version = '4.1'
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
@@ -38,6 +39,6 @@ Pod::Spec.new do |s|
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.frameworks = 'UIKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end
