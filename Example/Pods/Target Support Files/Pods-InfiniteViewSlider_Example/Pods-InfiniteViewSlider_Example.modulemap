@@ -1,0 +1,6 @@
+framework module Pods_InfiniteViewSlider_Example {
+  umbrella header "Pods-InfiniteViewSlider_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

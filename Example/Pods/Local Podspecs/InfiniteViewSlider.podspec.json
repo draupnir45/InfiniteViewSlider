@@ -1,0 +1,22 @@
+{
+  "name": "InfiniteViewSlider",
+  "version": "0.1.0",
+  "summary": "A short description of InfiniteViewSlider.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/draupnir45/InfiniteViewSlider",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "draupnir45": "draupnir45@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/draupnir45/InfiniteViewSlider.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "InfiniteViewSlider/Classes/**/*"
+}

@@ -1,0 +1,6 @@
+framework module InfiniteViewSlider {
+  umbrella header "InfiniteViewSlider-umbrella.h"
+
+  export *
+  module * { export * }
+}

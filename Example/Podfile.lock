@@ -1,0 +1,16 @@
+PODS:
+  - InfiniteViewSlider (0.1.0)
+
+DEPENDENCIES:
+  - InfiniteViewSlider (from `../`)
+
+EXTERNAL SOURCES:
+  InfiniteViewSlider:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  InfiniteViewSlider: ac1e42ae72086b1da0b72311d39381a3b3943db9
+
+PODFILE CHECKSUM: d24531b8c87699316510dc24ddebc13f0cfca8dc
+
+COCOAPODS: 1.5.0

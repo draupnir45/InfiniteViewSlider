@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'InfiniteViewSlider_Example' do
+  pod 'InfiniteViewSlider', :path => '../'
+
+  target 'InfiniteViewSlider_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

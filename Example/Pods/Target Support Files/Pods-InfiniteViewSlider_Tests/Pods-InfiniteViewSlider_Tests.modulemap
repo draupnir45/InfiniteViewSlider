@@ -1,0 +1,6 @@
+framework module Pods_InfiniteViewSlider_Tests {
+  umbrella header "Pods-InfiniteViewSlider_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
