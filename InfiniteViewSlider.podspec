@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'InfiniteViewSlider'
-  s.version          = '0.1.0'
+  s.version          = '0.0.1'
   s.summary          = 'Easy-to-use Infinite Paging ScrollView.'
 
 # This description is used to generate tags and improve search results.
@@ -24,8 +24,9 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/draupnir45/InfiniteViewSlider'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'draupnir45' => 'draupnir45@gmail.com' }
+  s.author           = { 'Jongchan Park' => 'draupnir45@gmail.com' }
   s.source           = { :git => 'https://github.com/draupnir45/InfiniteViewSlider.git', :tag => s.version.to_s }
+  s.pod_target_xcconfig = { "SWIFT_VERSION" => "4.0" }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
