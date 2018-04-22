@@ -14,27 +14,11 @@ public protocol InfiniteViewSliderDelegate: class {
 
 @objcMembers open class InfiniteViewSlider: UIView, UIScrollViewDelegate {
 
-  // MARK: - Interfaces
+  // MARK: - Open Properties
 
   open weak var delegate: InfiniteViewSliderDelegate?
 
-  public var slideTimeInterval: TimeInterval = 3.0
-
-
-  // MARK: - Properties
-
-  private var appWillResignActiveObserver: NSObjectProtocol!
-
-  private var appDidBecomeActiveObserver: NSObjectProtocol!
-
-  private let scrollView: UIScrollView = {
-    let scrollView = UIScrollView()
-    scrollView.isPagingEnabled = true
-    scrollView.showsVerticalScrollIndicator = false
-    scrollView.showsHorizontalScrollIndicator = false
-    scrollView.bounces = false
-    return scrollView
-  }()
+  open var slideTimeInterval: TimeInterval = 3.0
 
   open var viewArray: [UIView] = [] {
     didSet {
@@ -55,21 +39,6 @@ public protocol InfiniteViewSliderDelegate: class {
     }
   }
 
-  private var currentViewIndex: Int = 0
-
-  private var currentViewFrame: CGRect = CGRect.zero {
-    didSet {
-      if viewArray.indices.contains(currentViewIndex) {
-        viewArray[currentViewIndex].frame = currentViewFrame
-      }
-    }
-  }
-  private var prevViewFrame: CGRect = CGRect.zero
-  private var nextViewFrame: CGRect = CGRect.zero
-
-
-  private var autoSlideBuffer: Bool = false
-
   open var isAutoSlideEnabled = false {
     didSet {
       self.autoSlideBuffer = self.isAutoSlideEnabled
@@ -81,8 +50,41 @@ public protocol InfiniteViewSliderDelegate: class {
     }
   }
 
-  var autoSlideTimer: Timer?
 
+  // MARK: - Private Properties
+
+  private var appWillResignActiveObserver: NSObjectProtocol!
+
+  private var appDidBecomeActiveObserver: NSObjectProtocol!
+
+  private let scrollView: UIScrollView = {
+    let scrollView = UIScrollView()
+    scrollView.isPagingEnabled = true
+    scrollView.showsVerticalScrollIndicator = false
+    scrollView.showsHorizontalScrollIndicator = false
+    scrollView.bounces = false
+    return scrollView
+  }()
+
+  private var currentViewIndex: Int = 0
+
+  private var currentViewFrame: CGRect = CGRect.zero {
+    didSet {
+      if viewArray.indices.contains(currentViewIndex) {
+        viewArray[currentViewIndex].frame = currentViewFrame
+      }
+    }
+  }
+
+  private var prevViewFrame: CGRect = CGRect.zero
+
+  private var nextViewFrame: CGRect = CGRect.zero
+
+  private var autoSlideBuffer: Bool = false
+
+  private var autoSlideTimer: Timer?
+
+  // MARK: - Method
 
   public func setIndex(index: Int) {
     self.currentViewIndex = index
@@ -117,7 +119,7 @@ public protocol InfiniteViewSliderDelegate: class {
     self.appDidBecomeActiveObserver = nil
   }
 
-  func setSubviews() {
+  private func setSubviews() {
     addSubview(scrollView)
     scrollView.delegate = self
     scrollView.frame = self.bounds
@@ -140,7 +142,7 @@ public protocol InfiniteViewSliderDelegate: class {
     self.layoutCustomViews()
   }
 
-  public func layoutCustomViews() {
+  private func layoutCustomViews() {
     scrollView.frame = self.bounds
 
     prevViewFrame = CGRect.init(
@@ -209,7 +211,7 @@ public protocol InfiniteViewSliderDelegate: class {
 
   }
 
-  func startSlide() {
+  private func startSlide() {
     autoSlideTimer?.invalidate()
     autoSlideTimer = nil
     autoSlideTimer =
@@ -224,18 +226,18 @@ public protocol InfiniteViewSliderDelegate: class {
 
 
   @objc
-  func goNextView() {
+  private func goNextView() {
     guard viewArray.count > 0 else { return }
     self.scrollView.setContentOffset(CGPoint.init(x: self.frame.size.width * 2, y: 0.0), animated: true)
   }
 
-  func hideAll() {
+  private func hideAll() {
     _ = viewArray.map({ view in
       view.isHidden = true
     })
   }
 
-  func cleanUp() {
+  private func cleanUp() {
     hideAll()
     viewArray[currentViewIndex].frame = currentViewFrame
     viewArray[currentViewIndex].isHidden = false
@@ -243,9 +245,9 @@ public protocol InfiniteViewSliderDelegate: class {
     if isAutoSlideEnabled { startSlide() }
   }
 
-  func pauseSlide() {
-    autoSlideTimer?.invalidate()
-    autoSlideTimer = nil
+  private func pauseSlide() {
+  autoSlideTimer?.invalidate()
+  autoSlideTimer = nil
   }
 
 }
