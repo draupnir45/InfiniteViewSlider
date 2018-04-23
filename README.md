@@ -14,7 +14,7 @@ let slider = InfiniteViewSlider(frame: ... )
 
 slider.viewArray = [subView1, subView2]
 slider.isAutoSlideEnabled = true
-slider.slideTimeInterval = 1.0
+slider.autoSlideTimeInterval = 1.0
 
 view.addSubView(slider)
 
