@@ -23,7 +23,7 @@ view.addSubView(slider)
 
 ## Screenshot
 
-<img src="/screenshot.gif" width = 50%> 
+<img src="screenshot.gif" width = 50%> 
 
 ## Example
 
@@ -41,6 +41,10 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'InfiniteViewSlider'
 ```
+
+## Log
+- 0.0.1: Initial upload.
+- 0.0.2: Add documentation for delegate and changed names of properties.
 
 ## Author
 
