@@ -9,7 +9,14 @@
 import UIKit
 
 public protocol InfiniteViewSliderDelegate: class {
-  func sliderDidSlide(_ slider: InfiniteViewSlider, contentOffset: Double, numberOfViews: Int, currentViewIndex: Int)
+  /// Tells delegate that slider is sliding, status.
+  ///
+  /// - Parameters:
+  ///   - slider: slider itself
+  ///   - contentOffset: progress of sliding. As an example, returns 2.5 if sliding half way from view 2 to view 3...
+  ///   - numberOfViews: number of views in `slidingSubviews`.
+  ///   - currentViewIndex: index of current view in `slidingSubviews`.
+  func sliderDidSlide(_ slider: InfiniteViewSlider, progress: Double, numberOfViews: Int, currentViewIndex: Int)
 }
 
 @objcMembers open class InfiniteViewSlider: UIView, UIScrollViewDelegate {
@@ -18,24 +25,24 @@ public protocol InfiniteViewSliderDelegate: class {
 
   open weak var delegate: InfiniteViewSliderDelegate?
 
-  open var slideTimeInterval: TimeInterval = 3.0
+  open var autoSlideTimeInterval: TimeInterval = 3.0
 
-  open var viewArray: [UIView] = [] {
+  open var slidingSubviews: [UIView] = [] {
     didSet {
       layoutSubviews()
-      guard viewArray.count > 0 else { return }
-      _ = self.viewArray.map { subview in
+      guard slidingSubviews.count > 0 else { return }
+      _ = self.slidingSubviews.map { subview in
         subview.frame = CGRect.init(origin: CGPoint.init(x: scrollView.frame.width, y: 0.0), size: scrollView.frame.size)
         subview.clipsToBounds = true
         self.scrollView.addSubview(subview)
         subview.isHidden = true
       }
 
-      if viewArray.indices.contains(currentViewIndex) {
-        viewArray[currentViewIndex].isHidden = false
+      if slidingSubviews.indices.contains(currentViewIndex) {
+        slidingSubviews[currentViewIndex].isHidden = false
       }
 
-      self.scrollView.isScrollEnabled = viewArray.count > 1
+      self.scrollView.isScrollEnabled = slidingSubviews.count > 1
     }
   }
 
@@ -70,8 +77,8 @@ public protocol InfiniteViewSliderDelegate: class {
 
   private var currentViewFrame: CGRect = CGRect.zero {
     didSet {
-      if viewArray.indices.contains(currentViewIndex) {
-        viewArray[currentViewIndex].frame = currentViewFrame
+      if slidingSubviews.indices.contains(currentViewIndex) {
+        slidingSubviews[currentViewIndex].frame = currentViewFrame
       }
     }
   }
@@ -84,15 +91,15 @@ public protocol InfiniteViewSliderDelegate: class {
 
   private var autoSlideTimer: Timer?
 
-  // MARK: - Method
+  // MARK: - Methods
 
   public func setIndex(index: Int) {
     self.currentViewIndex = index
-    _ = viewArray.map { view in
+    _ = slidingSubviews.map { view in
       view.isHidden = true
     }
-    viewArray[index].isHidden = false
-    viewArray[index].frame = currentViewFrame
+    slidingSubviews[index].isHidden = false
+    slidingSubviews[index].frame = currentViewFrame
     scrollView.contentOffset.x = scrollView.frame.width
   }
 
@@ -108,7 +115,7 @@ public protocol InfiniteViewSliderDelegate: class {
 
   convenience public init(frame: CGRect, views: [UIView]) {
     self.init(frame: frame)
-    self.viewArray = views
+    self.slidingSubviews = views
   }
 
   deinit {
@@ -166,48 +173,49 @@ public protocol InfiniteViewSliderDelegate: class {
 
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
-    guard viewArray.count > 0 else { return }
+    guard slidingSubviews.count > 0 else { return }
     let width = scrollView.frame.width
 
-    // 다음 카드로 가기 전 준비
+    // Prepare for slide to next view.
     if scrollView.contentOffset.x > width {
-      let nextIndex = (currentViewIndex + 1) % viewArray.count
-      let nextView = self.viewArray[nextIndex]
+      let nextIndex = (currentViewIndex + 1) % slidingSubviews.count
+      let nextView = self.slidingSubviews[nextIndex]
       nextView.frame = nextViewFrame
       nextView.isHidden = false
     }
 
-    // 이전 카드로 가기 전 준비
+    // Prepare for slide to previous view.
     if scrollView.contentOffset.x < width {
-      let prevIndex = (currentViewIndex + viewArray.count - 1) % viewArray.count
-      let prevView = self.viewArray[prevIndex]
+      let prevIndex = (currentViewIndex + slidingSubviews.count - 1) % slidingSubviews.count
+      let prevView = self.slidingSubviews[prevIndex]
       prevView.frame = prevViewFrame
       prevView.isHidden = false
     }
 
-    //오프셋 초기화
+    // Refresh offset
     if scrollView.contentOffset.x >= width * 2.0 {
 
-      //다음 카드로 완전히 넘어갔을 때
-      let nextIndex = (currentViewIndex + 1) % viewArray.count
+      // When Completely slided to next view
+      let nextIndex = (currentViewIndex + 1) % slidingSubviews.count
       currentViewIndex = nextIndex
       cleanUp()
 
     } else if scrollView.contentOffset.x <= 0.0 {
 
-      //이전 카드로 완전히 넘어갔을 때
-      let prevIndex = (currentViewIndex + viewArray.count - 1) % viewArray.count
+      // When Completely slided to previous view.
+      let prevIndex = (currentViewIndex + slidingSubviews.count - 1) % slidingSubviews.count
       currentViewIndex = prevIndex
       cleanUp()
+
     }
 
     var progress = ((scrollView.contentOffset.x - width) / width) + CGFloat(currentViewIndex)
 
     if progress < 0 {
-      progress += CGFloat(viewArray.count)
+      progress += CGFloat(slidingSubviews.count)
     }
 
-    delegate?.sliderDidSlide(self, contentOffset: Double(progress), numberOfViews: viewArray.count, currentViewIndex: currentViewIndex)
+    delegate?.sliderDidSlide(self, progress: Double(progress), numberOfViews: slidingSubviews.count, currentViewIndex: currentViewIndex)
 
   }
 
@@ -217,7 +225,7 @@ public protocol InfiniteViewSliderDelegate: class {
     autoSlideTimer =
       Timer
         .scheduledTimer(
-          timeInterval: slideTimeInterval,
+          timeInterval: autoSlideTimeInterval,
           target: self,
           selector: #selector(self.goNextView),
           userInfo: nil,
@@ -227,20 +235,20 @@ public protocol InfiniteViewSliderDelegate: class {
 
   @objc
   private func goNextView() {
-    guard viewArray.count > 0 else { return }
+    guard slidingSubviews.count > 0 else { return }
     self.scrollView.setContentOffset(CGPoint.init(x: self.frame.size.width * 2, y: 0.0), animated: true)
   }
 
   private func hideAll() {
-    _ = viewArray.map({ view in
+    _ = slidingSubviews.map({ view in
       view.isHidden = true
     })
   }
 
   private func cleanUp() {
     hideAll()
-    viewArray[currentViewIndex].frame = currentViewFrame
-    viewArray[currentViewIndex].isHidden = false
+    slidingSubviews[currentViewIndex].frame = currentViewFrame
+    slidingSubviews[currentViewIndex].isHidden = false
     scrollView.contentOffset.x = self.frame.width
     if isAutoSlideEnabled { startSlide() }
   }
