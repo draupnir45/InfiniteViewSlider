@@ -20,6 +20,11 @@ view.addSubView(slider)
 
 ```
 
+
+## Screenshot
+
+<img src="/screenshot.gif" width = 50%> 
+
 ## Example
 
 To run the example project execute `pod try 'InfiniteViewSlider'` from terminal.
